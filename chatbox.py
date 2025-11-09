@@ -51,7 +51,7 @@ def store_embeddings_pinecone(documents, index_name):
     existing_indexes = [index.name for index in pc.list_indexes()]
     
     if index_name not in existing_indexes:
-        print(f" Index '{index_name}' not found. Please create it in Pinecone first.")
+        print(f"⚠️  Index '{index_name}' not found. Please create it in Pinecone first.")
     
     # Connect to index
     index = pc.Index(index_name)
@@ -136,45 +136,44 @@ def query_with_sources(question, retriever, rag_chain):
 if __name__ == "__main__":
     
     # STEP 1: Load and process documents (run once)
-    print(" Loading documents...")
+    print("📄 Loading documents...")
     doc = read_doc('documents/')
     print(f"✓ Loaded {len(doc)} documents")
     
     # STEP 2: Chunk documents
-    print("  Chunking documents...")
+    print("✂️  Chunking documents...")
     documents = chunk_data(docs=doc)
     print(f"✓ Created {len(documents)} chunks")
     
     # STEP 3: Store embeddings (run once, then comment out)
     index_name = "chatbox"
-    print(" Storing embeddings in Pinecone...")
+    print("💾 Storing embeddings in Pinecone...")
     vectorstore = store_embeddings_pinecone(documents, index_name)
     print("✓ Embeddings created and stored successfully!")
     
     # ==================== RETRIEVAL PART (NEW METHOD) ====================
     
     # STEP 4: Load vectorstore (for subsequent runs, uncomment below)
-    # print("\n Loading vectorstore for retrieval...")
+    # print("\n🔄 Loading vectorstore for retrieval...")
     # vectorstore = load_vectorstore(index_name)
     
     # STEP 5: Load LLM
-    print(" Loading LLM...")
+    print("🤖 Loading LLM...")
     llm = load_llm(model_name="llama3")
     
     # STEP 6: Create RAG chain
-    print(" Creating RAG chain...")
+    print("🔗 Creating RAG chain...")
     rag_chain, retriever = create_rag_chain(vectorstore, llm)
     
     # STEP 7: Test queries
     print("\n" + "="*70)
-    print(" RAG SYSTEM READY - Testing queries")
+    print("🎯 RAG SYSTEM READY - Testing queries")
     print("="*70 + "\n")
     
     # Example queries
+    User_input=input("Enter Questions:-")
     test_queries = [
-        "What is the main purpose of the document?",
-        "Summarize the key points",
-        "What are the main topics discussed?"
+        User_input
     ]
     
     for query in test_queries[:1]:  # Test with first query
@@ -185,10 +184,10 @@ if __name__ == "__main__":
             # Query with sources
             result = query_with_sources(query, retriever, rag_chain)
             
-            print("\n Answer:")
+            print("\n📝 Answer:")
             print(result["answer"])
             
-            print("\n Sources used:")
+            print("\n📚 Sources used:")
             for i, doc in enumerate(result["source_documents"], 1):
                 print(f"\n--- Source {i} ---")
                 print(doc.page_content[:300] + "...")
@@ -212,7 +211,7 @@ def chat_loop():
     rag_chain, retriever = create_rag_chain(vectorstore, llm)
     
     print("\n" + "="*70)
-    print(" Chatbot ready! Type 'quit' to exit, 'sources' to see last sources")
+    print("🤖 Chatbot ready! Type 'quit' to exit, 'sources' to see last sources")
     print("="*70 + "\n")
     
     last_sources = []
@@ -221,11 +220,11 @@ def chat_loop():
         query = input("You: ").strip()
         
         if query.lower() in ['quit', 'exit', 'q']:
-            print(" Goodbye!")
+            print("👋 Goodbye!")
             break
         
         if query.lower() == 'sources' and last_sources:
-            print("\n Last query sources:")
+            print("\n📚 Last query sources:")
             for i, doc in enumerate(last_sources, 1):
                 print(f"\n--- Source {i} ---")
                 print(doc.page_content[:300] + "...")
@@ -237,10 +236,9 @@ def chat_loop():
         
         try:
             result = query_with_sources(query, retriever, rag_chain)
-            print(f"\n Bot: {result['answer']}\n")
+            print(f"\n🤖 Bot: {result['answer']}\n")
             last_sources = result['source_documents']
         except Exception as e:
-            print(f"Error: {e}\n")
+            print(f"❌ Error: {e}\n")
 
-# Uncomment to run interactive chat:
-# chat_loop()
+chat_loop()
