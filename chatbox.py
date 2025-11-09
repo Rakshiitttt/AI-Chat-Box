@@ -60,7 +60,7 @@ def store_embeddings_pinecone(documents, index_name):
 # Call function
 index_name = "chatbox"
 vectorstore = store_embeddings_pinecone(documents, index_name)
-print("✅ Embeddings created and stored successfully!")
+print(" Embeddings created and stored successfully!")
 
 # Load local LLM (Ollama)
 def load_llm(model_name="llama3"):
@@ -82,14 +82,15 @@ qa_chain = RetrievalQA.from_chain_type(
 query = "What is the main purpose of the document?"
 response = qa_chain.invoke({"query": query})
 
-print("\n✅ Final Answer:")
+print("\n Final Answer:")
 print(response["result"])
 
-print("\n📄 Sources used:")
+print("\n Sources used:")
 for i, doc in enumerate(response["source_documents"], 1):
     print(f"\n--- Source {i} ---")
     print(doc.page_content[:500], "...")  # only print first chars
 
 
     
+
 
