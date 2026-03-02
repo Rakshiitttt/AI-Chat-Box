@@ -13,7 +13,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
 # Set API key
-os.environ["PINECONE_API_KEY"] = "pcsk_5CX4Px_31FNGf7oNNNcpn2qVuXJjQXAUjSvvtJAeD4cHNC2hBKVJXE84Qj1bEYJTiAfoyq"
+os.environ["PINECONE_API_KEY"] = "PINECONE_API_KEY"
 
 # ==================== DOCUMENT LOADING ====================
 def read_doc(directory):
@@ -242,3 +242,4 @@ def chat_loop():
             print(f"❌ Error: {e}\n")
 
 chat_loop()
+
